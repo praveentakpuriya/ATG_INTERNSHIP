@@ -7,6 +7,11 @@ use Illuminate\Support\Facades\Session;
 
 class TaskController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
     /**
      * Display a listing of the resource.
      *
@@ -14,7 +19,8 @@ class TaskController extends Controller
      */
     public function index()
     {
-        return "This is index page";
+        $tasks= Task::paginate(2);
+        return view('tasks.index')->with('tasks',$tasks);
     }
 
     /**
@@ -66,7 +72,8 @@ class TaskController extends Controller
      */
     public function edit($id)
     {
-        //
+        $task = Task::find($id); //
+        return view('tasks.edit')->withTask($task);
     }
 
     /**
@@ -78,8 +85,18 @@ class TaskController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
-    }
+        $this->validate($request, [
+            'task' => 'required|min:5'
+
+        ]);
+        $task = Task::find($id);
+        $task->task = $request->task;
+        $task->save();
+        Session::flash('success', 'Saved The Task Successfully');
+
+
+        return redirect()->route('task.index');
+        }
 
     /**
      * Remove the specified resource from storage.
