@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\TaskController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
@@ -15,9 +16,16 @@ use Illuminate\Support\Facades\Mail;
 |
 */
 
+Route::resource('task', 'TaskController');
+
+Route::get('/', function () {
+    return redirect()->route('task.index()');
+});
+
 Route::get('/', function () {
     return view('welcome');
 });
+
 
 Auth::routes();
 
